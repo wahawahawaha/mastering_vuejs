@@ -1,0 +1,39 @@
+name: Deploy Vue App to AWS
+on:
+  push:
+    branches:
+      - main  # mainブランチにpushしたときに実行
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # OIDC認証に必須
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # あなたのVue環境に合わせる
+
+      - name: Build Vue App
+        run: |
+          npm install
+          npm run build 
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::270673620947:role/GithubActions-Deploy-Role
+          aws-region: ap-northeast-1 # あなたのリージョン
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync dist/ s3://s3-tachibana-20251228 --delete
+
+      - name: Clear CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id EFOWBF7N3BXD1 --paths "/*"
