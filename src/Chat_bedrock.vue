@@ -26,14 +26,17 @@ const askAI = async () => {
       })
     })
 
-    const data = await response.json()
+    if (!response.ok) {
+      throw new Error('エラーが発生しました')
+    }
 
-    // 【学びポイント2】APIのレスポンス構造を解析する
-    if (response.ok) {
-      console.log(data.candidates[0].content)
-      responseText.value = data.candidates[0].content.parts[0].text
-    } else {
-      throw new Error(data.error?.message || 'エラーが発生しました')
+    // 【学びポイント2】レスポンスをテキストとして取得し、必要に応じてJSONパースする
+    const rawText = await response.text()
+    try {
+      const data = JSON.parse(rawText)
+      responseText.value = data.candidates?.[0]?.content?.parts?.[0]?.text || rawText
+    } catch (e) {
+      responseText.value = rawText
     }
   } catch (err) {
     errorMessage.value = `エラー発生: ${err.message}`
