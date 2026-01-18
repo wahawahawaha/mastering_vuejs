@@ -17,31 +17,20 @@ const askAI = async () => {
   responseText.value = ''
 
   try {
-    // 【学びポイント1】fetch による非同期リクエスト
     const response = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt.value }] }]
-      })
+      headers: { 'Content-Type': 'text/plain' },
+      body: prompt.value
     })
 
     if (!response.ok) {
       throw new Error('エラーが発生しました')
     }
 
-    // 【学びポイント2】レスポンスをテキストとして取得し、必要に応じてJSONパースする
-    const rawText = await response.text()
-    try {
-      const data = JSON.parse(rawText)
-      responseText.value = data.candidates?.[0]?.content?.parts?.[0]?.text || rawText
-    } catch (e) {
-      responseText.value = rawText
-    }
+    responseText.value = await response.text()
   } catch (err) {
     errorMessage.value = `エラー発生: ${err.message}`
   } finally {
-    // 【学びポイント3】成功しても失敗しても必ず実行される処理
     isLoading.value = false
   }
 }

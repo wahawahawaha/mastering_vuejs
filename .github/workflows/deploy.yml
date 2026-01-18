@@ -37,3 +37,8 @@ jobs:
       - name: Clear CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id EF0WBF7N3BXD1 --paths "/*"
+
+      - name: Deploy Lambda Function
+        run: |
+          zip lambda.zip Lambda_functions.py
+          aws lambda update-function-code --function-name Call_API_From_Bedrock --zip-file fileb://lambda.zip
