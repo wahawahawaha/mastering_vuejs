@@ -39,6 +39,9 @@ jobs:
           aws cloudfront create-invalidation --distribution-id EF0WBF7N3BXD1 --paths "/*"
 
       - name: Deploy Lambda Function
-        run: |
-          zip lambda.zip Lambda_functions.py
-          aws lambda update-function-code --function-name arn:aws:lambda:ap-northeast-1:270673620947:function:Call_API_From_BedRock --zip-file fileb://lambda.zip
+            uses: aws-actions/aws-lambda-deploy@v2
+            with:
+              function-name: Call_API_From_BedRock
+              source-dir: ./ 
+              handler: Lambda_functions.lambda_handler
+              runtime: python3.13
