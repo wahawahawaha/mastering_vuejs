@@ -7,7 +7,7 @@ const isLoading = ref(false)     // ローディング状態
 const errorMessage = ref('')     // エラーメッセージ
 
 
-const API_URL = 'https://3z6b1s74x7.execute-api.ap-northeast-1.amazonaws.com/dev/chat'
+const API_URL = 'https://vxk1txtbn1.execute-api.ap-northeast-1.amazonaws.com/dev/chat'
 
 const askAI = async () => {
   if (!prompt.value) return
