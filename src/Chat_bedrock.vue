@@ -30,6 +30,7 @@ const askAI = async () => {
 
     // 【学びポイント2】APIのレスポンス構造を解析する
     if (response.ok) {
+      console.log(data.candidates[0].content)
       responseText.value = data.candidates[0].content.parts[0].text
     } else {
       throw new Error(data.error?.message || 'エラーが発生しました')
