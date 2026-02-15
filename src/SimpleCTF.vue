@@ -106,7 +106,6 @@ export default {
     const showCelebration = () => {
       createConfetti()
       showModal.value = true
-      playVictorySound()
     }
 
     // モーダルを閉じる
@@ -136,33 +135,6 @@ export default {
       setTimeout(() => {
         confettiPieces.value = []
       }, 6000)
-    }
-
-    // 勝利音再生
-    const playVictorySound = () => {
-      try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)()
-        const notes = [523.25, 659.25, 783.99, 1046.50] // C, E, G, C音階
-
-        notes.forEach((frequency, index) => {
-          const oscillator = audioContext.createOscillator()
-          const gainNode = audioContext.createGain()
-
-          oscillator.connect(gainNode)
-          gainNode.connect(audioContext.destination)
-
-          oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime + index * 0.2)
-          oscillator.type = 'triangle'
-
-          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + index * 0.2)
-          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.2 + 0.3)
-
-          oscillator.start(audioContext.currentTime + index * 0.2)
-          oscillator.stop(audioContext.currentTime + index * 0.2 + 0.3)
-        })
-      } catch  {
-        console.log('Audio not supported or blocked')
-      }
     }
 
     return {
